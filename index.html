@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#121417">
+  <title>JJS Studio</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;650&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="logo" aria-hidden="true"></div>
+      <div class="brand">JJS Studio <small>Particle converter</small></div>
+      <div class="spacer"></div>
+      <label class="btn file-btn">Open place
+        <input id="fileInput" type="file" accept=".rbxl,.rbxlx,.rbxm,.rbxmx">
+      </label>
+      <button class="btn primary" id="exportBtn">Export</button>
+    </header>
+
+    <main class="workspace">
+      <aside class="panel">
+        <h2>Explorer · <span id="explorerPath">Workspace</span></h2>
+        <input class="search" id="search" placeholder="Search name, class">
+        <div class="tree" id="tree"></div>
+      </aside>
+
+      <section class="viewport">
+        <div class="scene">
+          <div class="floor"></div>
+          <canvas id="preview" class="preview"></canvas>
+        </div>
+        <div class="hud">
+          <div id="hudTitle">No place loaded</div>
+          <div class="hint" id="hudMeta">Drop a Roblox place or model.</div>
+        </div>
+        <div class="empty" id="emptyState">
+          <div>
+            <strong>Viewport</strong>
+            Stylized burst only — Roblox emitters can’t run in a browser.
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel right">
+        <h2>Properties</h2>
+        <div class="props">
+          <div>
+            <label>Skill name</label>
+            <input class="field" id="skillName" value="converted">
+          </div>
+          <div class="pair">
+            <div>
+              <label>Key</label>
+              <input class="field" id="skillKey" type="number" value="1">
+            </div>
+            <div>
+              <label>Duration</label>
+              <input class="field" id="duration" type="number" min="0" step="0.1" value="0">
+            </div>
+          </div>
+          <div>
+            <label>Position</label>
+            <input class="field" id="position" value="0, 0, 0">
+          </div>
+
+          <label class="check"><input id="packMode" type="checkbox"> Pack mode — one skill per host</label>
+          <label class="check"><input id="recolor" type="checkbox"> Recolor from detected palette</label>
+
+          <div class="palette">
+            <div class="pal-row"><span>Detected</span>
+              <button class="chip" id="mainFound" title="Main"></button>
+              <button class="chip" id="accentFound" title="Accent"></button>
+              <button class="chip" id="otherFound" title="Other"></button>
+            </div>
+            <div class="found-labels">
+              <small id="mainFoundLabel">Main</small>
+              <small id="accentFoundLabel">Accent</small>
+              <small id="otherFoundLabel">Other</small>
+            </div>
+          </div>
+
+          <div id="recolorBox" style="opacity:.5">
+            <div class="pair tight">
+              <input id="mainColor" type="color" value="#ff3355"><input class="field" id="mainHex" value="#ff3355">
+            </div>
+            <div class="pair tight">
+              <input id="accentColor" type="color" value="#ffcc66"><input class="field" id="accentHex" value="#ffcc66">
+            </div>
+            <div class="pair tight">
+              <input id="otherColor" type="color" value="#ffffff"><input class="field" id="otherHex" value="#ffffff">
+            </div>
+          </div>
+
+          <div class="tabs">
+            <button class="tab on" id="previewTab">Preview</button>
+            <button class="tab" id="jsonTab">JSON</button>
+            <button class="tab" id="compactTab">KLUv</button>
+          </div>
+          <div class="pane on" id="previewPane">
+            <p class="hint">Approximate burst from color / lifetime / speed. Not a Roblox playback.</p>
+          </div>
+          <div class="pane" id="jsonPane">
+            <div class="output" id="output"></div>
+            <div class="actions">
+              <button class="btn" id="copyJson">Copy JSON</button>
+              <button class="btn" id="dlJson">Download</button>
+            </div>
+          </div>
+          <div class="pane" id="compactPane">
+            <div class="output" id="compactOut"></div>
+            <div class="actions">
+              <button class="btn" id="copyCompact">Copy compact</button>
+              <button class="btn" id="dlCompact">Download</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="status">
+      <span id="selCount">0 emitters</span>
+      <span id="statusText">Ready</span>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fzstd@0.1.1/umd/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/zstd-codec@0.1.4/dist/bundle.js"></script>
+  <script src="parser.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+  </script>
+</body>
+</html>
